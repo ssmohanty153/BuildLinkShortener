@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-let port = process.env.PORT || 5000;
+let port = process.env.PORT || 3000;
 mongoose.connect("mongodb://127.0.0.1:27017/UrlShortener");
 
 const UrlShortener = new mongoose.Schema(
@@ -22,7 +22,7 @@ const UrlShortener = new mongoose.Schema(
 const urlShortenerModel = mongoose.model("urlShortener", UrlShortener);
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, "../build")));
+app.use(express.static(path.join(__dirname, "../ReactProject/build")));
 
 // Handle React app requests
 
@@ -37,18 +37,18 @@ app.get("/:shortUrl", async (req, res) => {
     const minutesElapsed = (now.getTime() - createdAt) / (1000 * 60);
     if (minutesElapsed > 5) {
       //res.status(404).send("URL has expired");
-      return res.redirect("http://localhost:5000/");
+      return res.redirect(`http://localhost:${port}/`);
     }
     return res.redirect(url.originalUrl);
   }
 
   // res.status(404).send("Not found");
 
-  return res.redirect("http://localhost:5000/");
+  return res.redirect(`http://localhost:${port}/`);
 });
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../build/index.html"));
+  res.sendFile(path.join(__dirname, "../ReactProject/build/index.html"));
 });
 
 app.post("/api/shorten", async (req, res) => {
@@ -57,15 +57,16 @@ app.post("/api/shorten", async (req, res) => {
   console.log(req.body);
 
   // Check if the URL is valid
-  //   if (!isValidUrl(originalUrl)) {
-  //     return res.status(400).json({ error: "Invalid URL" });
-  //   }
+  if (!isValidUrl(originalUrl)) {
+    return res.status(400).json({ error: "Invalid URL" });
+  }
 
   // Check if the URL already exists in the database
+
   const existingUrl = await urlShortenerModel.findOne({ originalUrl });
   if (existingUrl) {
     return res.json({
-      shortUrl: `http://localhost:5000/${existingUrl.shortUrl}`,
+      shortUrl: `http://localhost:${port}/${existingUrl.shortUrl}`,
     });
   }
 
@@ -80,7 +81,7 @@ app.post("/api/shorten", async (req, res) => {
   const url = new urlShortenerModel({ originalUrl, shortUrl });
   await url.save();
 
-  res.json({ shortUrl: `http://localhost:5000/${shortUrl}` });
+  res.json({ shortUrl: `http://localhost:${port}/${shortUrl}` });
 });
 
 function isValidUrl(url) {
