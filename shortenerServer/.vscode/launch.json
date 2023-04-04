@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "chrome",
+            "name": "http://localhost:5000/ejpi5u",
+            "request": "launch",
+            "url": "http://localhost:5000/ejpi5u"
+        }
+    ]
+}
