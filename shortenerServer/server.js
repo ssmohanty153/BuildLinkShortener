@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-let port = process.env.PORT || 3000;
+let port = process.env.PORT || 5000;
 mongoose.connect("mongodb://127.0.0.1:27017/UrlShortener");
 
 const UrlShortener = new mongoose.Schema(

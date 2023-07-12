@@ -8,7 +8,7 @@ export default function Shortener() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/api/shorten", {
+      const res = await axios.post("http://localhost:5000/api/shorten", {
         originalUrl: url,
       });
       setShortUrl(res?.data?.shortUrl);
